@@ -27,9 +27,9 @@ namespace Utility
 			this.infectedCasesTotal = infectedCasesTotal;
 			this.recoveredCasesTotal = recoveredCasesTotal;
 
-			this.deathCases = Math.Max(deathCasesTotal - prev.deathCasesTotal, 0);
-			this.infectedCases = Math.Max(infectedCasesTotal - prev.infectedCasesTotal, 0);
-			this.recoveredCases = Math.Max(recoveredCasesTotal - prev.recoveredCasesTotal, 0);
+			this.deathCases = Math.Max(deathCasesTotal - this.prev.deathCasesTotal, 0);
+			this.infectedCases = Math.Max(infectedCasesTotal - this.prev.infectedCasesTotal, 0);
+			this.recoveredCases = Math.Max(recoveredCasesTotal - this.prev.recoveredCasesTotal, 0);
 		}
 
 		public DayInfo()
