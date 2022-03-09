@@ -27,21 +27,30 @@ namespace Utility
 
 		public Histogram(Dictionary<DateTime, DayInfo> dayInfo, int intervalCount, DateTime? dateFrom, DateTime? dateTo, Parameters cur_parameter = Parameters.Confirmed)
         {
-            this.dateFrom = dateFrom;
-            this.dateTo = dateTo;
+			this.dayInfo = dayInfo;
+			this.cropDayInfo = dayInfo;
+
+			if (!dateFrom.HasValue | dateFrom <= DateTime.MinValue)
+				this.dateFrom = dayInfo.Keys.Min();
+			else this.dateFrom = dateFrom;
+
+			if (!dateTo.HasValue | dateTo <= DateTime.MinValue)
+				this.dateTo = dayInfo.Keys.Max();
+			else this.dateTo = dateTo;
+
+			if (this.dateFrom > this.dateTo)
+            {
+				this.dateFrom = dayInfo.Keys.Min();
+				this.dateTo = dayInfo.Keys.Max();
+			}
+
+			cropDayInfo = cropDayInfo.Where(item => item.Key >= this.dateFrom).ToDictionary(item => item.Key, item => item.Value);
+			cropDayInfo = cropDayInfo.Where(item => item.Key <= this.dateTo).ToDictionary(item => item.Key, item => item.Value);				
+
             this.cur_parameter = cur_parameter;
             this.intervalCount = intervalCount;
 			intervals = new List<Interval>();
-			this.dayInfo = dayInfo;
-			this.cropDayInfo = dayInfo;
-			if (dateFrom != null)
-            {
-				cropDayInfo = cropDayInfo.Where(item => item.Key >= dateFrom).ToDictionary(item => item.Key, item => item.Value);
-            }
-			if (dateTo != null)
-			{
-				cropDayInfo = cropDayInfo.Where(item => item.Key <= dateTo).ToDictionary(item => item.Key, item => item.Value);
-			}
+			
 		}
 
 		//todo заполнить гистограмму:
@@ -67,9 +76,9 @@ namespace Utility
             }
         }
 
-		private void Init(Parameters param)
+		private void Init()
         {
-			getMinMax(param);
+			getMinMax(cur_parameter);
 			infectionSpan = (float)(maxVal - minVal) / intervalCount;
 			//init hist
             for (int i = 0; i < intervalCount; i++)
@@ -84,7 +93,7 @@ namespace Utility
             {
 				int index = -1;
 
-				switch (param)
+				switch (cur_parameter)
                 {
                     case Parameters.Deaths:
 						index = intervals.FindIndex(x => x.l_boundary <= day.Value.deathCases &&
@@ -155,9 +164,9 @@ namespace Utility
 			return crit;
         }
 
-		public double Calculate(Parameters param = Parameters.Confirmed, bool useLaplas = true)
+		public double Calculate(bool useLaplas = true)
         {
-			Init(param);
+			Init();
 			return setTheorFreq(useLaplas);
         }
 	}

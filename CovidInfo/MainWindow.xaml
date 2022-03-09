@@ -5,8 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CovidInfo"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <WpfPlot Name ="WpfPlotCount" />
+        Title="MainWindow" Height="674" Width="1181">
+    <Grid Margin="0,0,0,-16" HorizontalAlignment="Left" Width="1171">
+        <WpfPlot Name ="WpfPlotCount" Margin="0,0,291,357" FontSize="16" />
+        <WpfPlot x:Name ="WpfPlotHist" Margin="0,307,291,50" />
+        <DatePicker x:Name="DateFromPicker" HorizontalAlignment="Left" Margin="947,68,0,0" VerticalAlignment="Top" SelectedDateChanged="DateFromPicker_SelectedDateChanged" Height="30" Width="213" FontSize="16"/>
+        <DatePicker x:Name="DateToPicker" HorizontalAlignment="Left" Margin="947,105,0,0" VerticalAlignment="Top" SelectedDateChanged="DateToPicker_SelectedDateChanged" Height="29" Width="213" FontSize="16"/>
+        <Label Content="Даты анализа" HorizontalAlignment="Left" Margin="960,31,0,0" VerticalAlignment="Top" Height="32" Width="122" FontSize="18"/>
+        <Label Content="Дата с" HorizontalAlignment="Left" Margin="886,68,0,0" VerticalAlignment="Top" Height="32" Width="61" FontSize="16"/>
+        <Label Content="Дата по" HorizontalAlignment="Left" Margin="875,104,0,0" VerticalAlignment="Top" Height="32" Width="72" FontSize="16"/>
+        <Button x:Name="btnRecalc" Content="Пересчет" HorizontalAlignment="Left" Margin="880,406,0,0" VerticalAlignment="Top" Height="38" Width="280" Click="btnRecalc_Click" FontSize="16"/>
+        <ComboBox x:Name="cbParam" HorizontalAlignment="Left" Margin="988,148,0,0" VerticalAlignment="Top" Width="172" SelectionChanged="cbParam_SelectionChanged" SelectedIndex="0" Height="40" FontSize="16" HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
+            <ComboBoxItem Content="Зараженные"/>
+            <ComboBoxItem Content="Умершие"/>
+            <ComboBoxItem Content="Выздоровевшие"/>
+        </ComboBox>
+        <ComboBox x:Name="cbCountry" HorizontalAlignment="Left" Margin="988,204,0,0" VerticalAlignment="Top" Width="172" SelectedIndex="0" Height="40" FontSize="16" SelectionChanged="cbCountry_SelectionChanged" HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
+            <ComboBoxItem Content="Brazil"/>
+            <ComboBoxItem Content="Russia"/>
+            <ComboBoxItem Content="Norway"/>
+            <ComboBoxItem Content="Ukraine"/>
+        </ComboBox>
+        <Label Content="Тип данных" HorizontalAlignment="Left" Margin="885,156,0,0" VerticalAlignment="Top" Height="32" Width="97" FontSize="16"/>
+        <Label Content="Страна" HorizontalAlignment="Left" Margin="916,212,0,0" VerticalAlignment="Top" Height="32" Width="66" FontSize="16"/>
+        <Label Content="Число разбиений" HorizontalAlignment="Left" Margin="1016,0,0,0" VerticalAlignment="Center" Height="36" Width="145" FontSize="16"/>
+        <TextBox x:Name="NumBins" HorizontalAlignment="Left" Margin="1099,360,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="51" TextChanged="NumBins_TextChanged"/>
+
     </Grid>
 </Window>
