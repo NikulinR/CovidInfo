@@ -22,8 +22,9 @@ namespace CovidInfo
     /// </summary>
     public partial class MainWindow : Window
     {
-        Settings set;
+        public Settings set;
         string param;
+        DataGrids dg;
         System.Globalization.CultureInfo culture = System.Globalization.CultureInfo.CreateSpecificCulture("ru");
 
         public void drawSummary()
@@ -143,6 +144,7 @@ namespace CovidInfo
             set.Recalc();
             drawSummary();
             drawHist();
+            dg.Update();
         }
 
         private void cbParam_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -187,6 +189,15 @@ namespace CovidInfo
                 NumBins.Text = bincnt.ToString();
             if (bincnt > 2)
                 set.BinCnt = bincnt;
+        }
+
+        private void btnShowGrid_Click(object sender, RoutedEventArgs e)
+        {
+            dg = new DataGrids();
+            dg.Owner = this;
+            dg.Init();
+            dg.Show();
+            dg.Update();
         }
     }
 }

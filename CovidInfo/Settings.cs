@@ -7,7 +7,7 @@ using Utility;
 
 namespace CovidInfo
 {
-    internal class Settings
+    public class Settings
     {
         private JsonParser? jsonParser;
         private Dictionary<DateTime, DayInfo>? init_info;
