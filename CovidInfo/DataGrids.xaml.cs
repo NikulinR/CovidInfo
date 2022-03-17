@@ -34,8 +34,8 @@ namespace CovidInfo
         public void Update()
         {
             GridSummary.ItemsSource = (from item in mainWindow.set.Init_info
-                                       where item.Key > mainWindow.set.DateFrom & item.Key < mainWindow.set.DateTo
-                                       select new { Дата = item.Key.ToString("dd MMM yyyy"), Заражено = item.Value.infectedCases, Умерло = item.Value.deathCases, Выздоровело = item.Value.recoveredCases });
+                                       where item.Key >= mainWindow.set.DateFrom & item.Key <= mainWindow.set.DateTo
+                                       select new { Дата = item.Key.ToString("dd MMM yyyy"), Заражено = item.Value.infectedCases, Умерло = item.Value.deathCases, Умерло_100 = item.Value.deathCases / 53.67580, Выздоровело = item.Value.recoveredCases });
             
             GridHist.ItemsSource = (from item in mainWindow.set.Histogram.intervals
                                     select new {Индекс = item.index, 
@@ -48,6 +48,11 @@ namespace CovidInfo
             GridHist.Columns[2].Header = "Левая граница";
             GridHist.Columns[3].Header = "Эмпирические частоты";
             GridHist.Columns[4].Header = "Теоретические частоты";
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            mainWindow.dg = null;
         }
     }
 }

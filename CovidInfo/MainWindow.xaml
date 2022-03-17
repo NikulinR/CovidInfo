@@ -13,12 +13,12 @@
         </Grid.RowDefinitions>
         <WpfPlot Name ="WpfPlotCount" Margin="10,10,281,10" FontSize="16" />
         <WpfPlot x:Name ="WpfPlotHist" Margin="10,10,281,10" Grid.Row="1" />
-        <DatePicker x:Name="DateFromPicker" HorizontalAlignment="Left" Margin="947,68,0,0" VerticalAlignment="Top" SelectedDateChanged="DateFromPicker_SelectedDateChanged" Height="30" Width="213" FontSize="16"/>
-        <DatePicker x:Name="DateToPicker" HorizontalAlignment="Left" Margin="947,105,0,0" VerticalAlignment="Top" SelectedDateChanged="DateToPicker_SelectedDateChanged" Height="30" Width="213" FontSize="16"/>
+        <DatePicker x:Name="DateFromPicker" HorizontalAlignment="Left" Margin="947,68,0,0" VerticalAlignment="Top" SelectedDateChanged="DateFromPicker_SelectedDateChanged" Height="30" Width="213" FontSize="16" DisplayDate="2021-01-05"/>
+        <DatePicker x:Name="DateToPicker" HorizontalAlignment="Left" Margin="947,105,0,0" VerticalAlignment="Top" SelectedDateChanged="DateToPicker_SelectedDateChanged" Height="30" Width="213" FontSize="16" DisplayDate="2021-04-15"/>
         <Label Content="Даты анализа" HorizontalAlignment="Left" Margin="960,31,0,0" VerticalAlignment="Top" Height="32" Width="122" FontSize="18"/>
         <Label Content="Дата с" HorizontalAlignment="Left" Margin="886,68,0,0" VerticalAlignment="Top" Height="32" Width="61" FontSize="16"/>
         <Label Content="Дата по" HorizontalAlignment="Left" Margin="875,104,0,0" VerticalAlignment="Top" Height="32" Width="72" FontSize="16"/>
-        <Button x:Name="btnRecalc" Content="Пересчет" HorizontalAlignment="Left" Margin="885,311,0,0" VerticalAlignment="Top" Height="38" Width="280" Click="btnRecalc_Click" FontSize="16"/>
+        <Button x:Name="btnRecalc" Content="Пересчет" HorizontalAlignment="Left" Margin="881,103,0,0" VerticalAlignment="Top" Height="38" Width="280" Click="btnRecalc_Click" FontSize="16" Grid.Row="1"/>
         <ComboBox x:Name="cbParam" HorizontalAlignment="Left" Margin="988,148,0,0" VerticalAlignment="Top" Width="172" SelectionChanged="cbParam_SelectionChanged" SelectedIndex="0" Height="40" FontSize="16" HorizontalContentAlignment="Left" VerticalContentAlignment="Center">
             <ComboBoxItem Content="Зараженные"/>
             <ComboBoxItem Content="Умершие"/>
@@ -34,7 +34,9 @@
         <Label Content="Страна" HorizontalAlignment="Left" Margin="916,212,0,0" VerticalAlignment="Top" Height="32" Width="66" FontSize="16"/>
         <Label Content="Число разбиений" HorizontalAlignment="Left" Margin="875,262,0,0" VerticalAlignment="Top" Height="31" Width="145" FontSize="16"/>
         <TextBox x:Name="NumBins" HorizontalAlignment="Left" Margin="1074,263,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Height="30" Width="77" TextChanged="NumBins_TextChanged" FontSize="16"/>
-        <Button x:Name="btnShowGrid" Content="Показать таблицы с данными" HorizontalAlignment="Left" Margin="885,41,0,0" VerticalAlignment="Top" Height="38" Width="280" Click="btnShowGrid_Click" FontSize="16" Grid.Row="1"/>
+        <Button x:Name="btnShowGrid" Content="Показать таблицы с данными" HorizontalAlignment="Left" Margin="875,267,0,0" VerticalAlignment="Top" Height="38" Width="280" Click="btnShowGrid_Click" FontSize="16" Grid.Row="1"/>
+        <CheckBox x:Name="cbLaplas" Content="Использовать функцию Лапласа" HorizontalAlignment="Left" Margin="934,330,0,0" VerticalAlignment="Top" Checked="cbLaplas_Checked" Unchecked="cbLaplas_UnChecked"/>
+        <CheckBox x:Name="cbShrink" Content="Сжимать данные" HorizontalAlignment="Left" Margin="934,360,0,0" VerticalAlignment="Top" Grid.RowSpan="2" Checked="cbShrink_Checked" Unchecked="cbShrink_UnChecked"/>
 
     </Grid>
 </Window>

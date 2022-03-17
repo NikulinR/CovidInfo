@@ -23,6 +23,7 @@ namespace CovidInfo
         public DateTime DateMax { get; set; }
         public int BinCnt { get; set; }
         public bool UseLaplas { get; set; }
+        public bool Shrink { get; set; }
         public string Country { get; set; }
         public Histogram.Parameters Parameter { get; set; }
         public Dictionary<DateTime, DayInfo>? Init_info { get => init_info;  }
@@ -34,7 +35,8 @@ namespace CovidInfo
             this.Country = country;
             this.Parameter = param;
             updateData = false;
-            UseLaplas = true;
+            UseLaplas = false;
+            Shrink = false;
             BinCnt = 20;
         }
 
@@ -49,7 +51,11 @@ namespace CovidInfo
         public void Recalc()
         {
             histogram = new Histogram(init_info, BinCnt, DateFrom, DateTo, Parameter);
-            crit = histogram.Calculate(UseLaplas);
+            crit = histogram.Calculate(UseLaplas, 
+                                       shrink: Shrink, 
+                                       min: -1,
+                                       max: 28,
+                                       border:5);
 
             defaultCrit = MathNet.Numerics.Distributions.ChiSquared.InvCDF(BinCnt - 2, 1 - alpha);
         }

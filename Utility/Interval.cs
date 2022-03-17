@@ -8,9 +8,9 @@ namespace Utility
 {
     public class Interval
     {
-        public int index { get; }
+        public int index { get; set; }
         public float l_boundary { get; }
-        public float r_boundary { get; }
+        public float r_boundary { get; set; }
         public float value_actual { get; set; }
         public float value_theor { get; set; }
 

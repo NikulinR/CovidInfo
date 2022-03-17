@@ -76,10 +76,17 @@ namespace Utility
             }
         }
 
-		private void Init()
+		private void Init(int min = -1, int max = -1)
         {
-			getMinMax(cur_parameter);
-			infectionSpan = (float)(maxVal - minVal) / intervalCount;
+            if (min >= -1 && max >= -1)
+            {
+				this.minVal = min;
+				this.maxVal = max;
+			}
+			else
+				getMinMax(cur_parameter);
+
+			infectionSpan = (float)(maxVal - minVal + 1) / intervalCount;
 			//init hist
             for (int i = 0; i < intervalCount; i++)
             {
@@ -92,26 +99,30 @@ namespace Utility
             foreach (var day in cropDayInfo)
             {
 				int index = -1;
-
+				bool zero = false;
 				switch (cur_parameter)
                 {
                     case Parameters.Deaths:
 						index = intervals.FindIndex(x => x.l_boundary <= day.Value.deathCases &&
-													     x.r_boundary >= day.Value.deathCases);
+													     x.r_boundary > day.Value.deathCases);
+						zero = day.Value.deathCases == 0;
 						break;
                     case Parameters.Confirmed:
 						index = intervals.FindIndex(x => x.l_boundary <= day.Value.infectedCases &&
-														 x.r_boundary >= day.Value.infectedCases);
+														 x.r_boundary > day.Value.infectedCases);
+						zero = day.Value.infectedCases == 0;
 						break;
                     case Parameters.Recovered:
 						index = intervals.FindIndex(x => x.l_boundary <= day.Value.recoveredCases &&
-														 x.r_boundary >= day.Value.recoveredCases);
+														 x.r_boundary > day.Value.recoveredCases);
+						zero = day.Value.recoveredCases == 0;
 						break;
                     default:
                         break;
                 }
                 
-				if (index >= 0)
+				if (index >= 0 //& (!zero | true)
+					)
                 {
 					intervals[index].value_actual++;
                 }
@@ -164,10 +175,62 @@ namespace Utility
 			return crit;
         }
 
-		public double Calculate(bool useLaplas = true)
+		public double Calculate(bool useLaplas = true, int min = -1, int max = -1, bool shrink = false, int border = 5)
         {
-			Init();
+			Init(min, max);
+            if (shrink)
+            {
+				intervals = Shrink(border);
+			}
 			return setTheorFreq(useLaplas);
         }
+
+		public List<Interval> Shrink(int border = 5)
+		{
+			List<Interval> ret_intervals = new List<Interval>();
+
+			Interval? frame_interval = null;
+
+			int ret_index = 0;
+			bool skipMode = false;
+
+			for (int i = 0; i < intervals.Count(); i++)
+            {
+				skipMode = intervals[i].value_actual < border;
+
+                if (!skipMode)
+                {
+					if (frame_interval is not null) //выход из режима сжатия
+					{
+						frame_interval.index = ret_index;
+						ret_index++;
+						ret_intervals.Add(frame_interval);
+						frame_interval = null;
+					}
+					Interval cur_interval = intervals[i];
+					cur_interval.index = ret_index;
+					ret_index++;
+					ret_intervals.Add(cur_interval);
+				}
+                else
+                {
+                    if (frame_interval is not null) //в режиме сжатия
+                    {
+						frame_interval.r_boundary = intervals[i].r_boundary;
+						frame_interval.value_actual += intervals[i].value_actual;
+					}
+                    else //вход в режим сжатия
+                    {
+						frame_interval = intervals[i];
+					}
+
+					if(i == intervals.Count() - 1)
+                    {
+						ret_intervals.Add(frame_interval);
+					}
+                } 
+			}
+			return ret_intervals;
+		}
 	}
 }

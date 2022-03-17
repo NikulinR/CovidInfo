@@ -24,7 +24,7 @@ namespace CovidInfo
     {
         public Settings set;
         string param;
-        DataGrids dg;
+        public DataGrids? dg;
         System.Globalization.CultureInfo culture = System.Globalization.CultureInfo.CreateSpecificCulture("ru");
 
         public void drawSummary()
@@ -70,12 +70,19 @@ namespace CovidInfo
             WpfPlotHist.Plot.Clear();
             WpfPlotHist.Plot.SetCulture(culture);
 
-            WpfPlotHist.Plot.AddBar(set.Histogram.intervals.Select(x => (double)x.value_actual).ToArray());
+            //WpfPlotHist.Plot.AddBar(set.Histogram.intervals.Select(x => (double)x.value_actual).ToArray());
             WpfPlotHist.Plot.AddScatter(set.Histogram.intervals.Select(x => (double)x.index).ToArray(),
                                          set.Histogram.intervals.Select(x => (double)x.value_theor).ToArray(),
                                          markerSize: 5, 
                                          color: System.Drawing.Color.Red,
                                          lineWidth: 4);
+            WpfPlotHist.Plot.AddScatter(set.Histogram.intervals.Select(x => (double)x.index).ToArray(),
+                                         set.Histogram.intervals.Select(x => (double)x.value_actual).ToArray(),
+                                         markerSize: 10,
+                                         color: System.Drawing.Color.Blue,
+                                         markerShape: ScottPlot.MarkerShape.cross,
+                                         lineWidth: 2);
+
             WpfPlotHist.Plot.YAxis.Label("Частота");
             WpfPlotHist.Plot.XAxis.Label("Индекс");
             WpfPlotHist.Plot.SetOuterViewLimits(yMin: 0, xMin: -0.8);
@@ -144,7 +151,8 @@ namespace CovidInfo
             set.Recalc();
             drawSummary();
             drawHist();
-            dg.Update();
+            if (dg is not null)
+                dg.Update();
         }
 
         private void cbParam_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -193,11 +201,34 @@ namespace CovidInfo
 
         private void btnShowGrid_Click(object sender, RoutedEventArgs e)
         {
-            dg = new DataGrids();
-            dg.Owner = this;
-            dg.Init();
+            if (dg is null)
+            {
+                dg = new DataGrids();
+                dg.Owner = this;
+                dg.Init();
+            }
             dg.Show();
             dg.Update();
+        }
+
+        private void cbLaplas_Checked(object sender, RoutedEventArgs e)
+        {
+            set.UseLaplas = true;
+        }
+
+        private void cbLaplas_UnChecked(object sender, RoutedEventArgs e)
+        {
+            set.UseLaplas = false;
+        }
+
+        private void cbShrink_Checked(object sender, RoutedEventArgs e)
+        {
+            set.Shrink = true;
+        }
+
+        private void cbShrink_UnChecked(object sender, RoutedEventArgs e)
+        {
+            set.Shrink = false;
         }
     }
 }

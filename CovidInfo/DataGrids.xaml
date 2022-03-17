@@ -6,17 +6,17 @@
         xmlns:local="clr-namespace:CovidInfo"
         mc:Ignorable="d"
         xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
-        Title="DataGrids" Height="482" Width="800">
+        Title="DataGrids" Height="482" Width="1043" Closed="Window_Closed">
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="389*" />
-            <ColumnDefinition Width="411*" />
+            <ColumnDefinition Width="147*" />
+            <ColumnDefinition Width="253*" />
         </Grid.ColumnDefinitions>
 
 
         <DataGrid x:Name="GridSummary" Margin="10,31,10,10" FontSize="14">
-            
+
         </DataGrid>
         <DataGrid x:Name="GridHist" Margin="10,31,10,10" Grid.Column="1" FontSize="14"/>
         <Label Content="Общие данные" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Height="26" Width="120" FontSize="14"/>
