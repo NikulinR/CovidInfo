@@ -7,6 +7,7 @@ using Utility;
 
 namespace CovidInfo
 {
+    [Serializable]
     public class Settings
     {
         private JsonParser? jsonParser;
@@ -29,6 +30,8 @@ namespace CovidInfo
         public Dictionary<DateTime, DayInfo>? Init_info { get => init_info;  }
         public Histogram? Histogram { get => histogram;  }
 
+        public Dictionary<string, string> countries;
+
         public double alpha = 0.05; 
         public Settings(string country, Utility.Histogram.Parameters param)
         {
@@ -43,9 +46,11 @@ namespace CovidInfo
         public void UpdateCountry(bool updateData = false)
         {
             jsonParser = new JsonParser(Country, updateData);
+            countries = jsonParser.getCountries();
             init_info = jsonParser.createInfoArray();
             DateMin = init_info.Keys.Min();
             DateMax = init_info.Keys.Max();
+
         }
 
         public void Recalc()
@@ -53,8 +58,8 @@ namespace CovidInfo
             histogram = new Histogram(init_info, BinCnt, DateFrom, DateTo, Parameter);
             crit = histogram.Calculate(UseLaplas, 
                                        shrink: Shrink, 
-                                       min: -1,
-                                       max: 28,
+                                       //min: -1,
+                                       //max: 28,
                                        border:5);
 
             defaultCrit = MathNet.Numerics.Distributions.ChiSquared.InvCDF(BinCnt - 2, 1 - alpha);

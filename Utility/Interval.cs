@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Utility
 {
+    [Serializable]
     public class Interval
     {
         public int index { get; set; }

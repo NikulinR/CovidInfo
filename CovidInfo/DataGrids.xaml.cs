@@ -35,7 +35,7 @@ namespace CovidInfo
         {
             GridSummary.ItemsSource = (from item in mainWindow.set.Init_info
                                        where item.Key >= mainWindow.set.DateFrom & item.Key <= mainWindow.set.DateTo
-                                       select new { Дата = item.Key.ToString("dd MMM yyyy"), Заражено = item.Value.infectedCases, Умерло = item.Value.deathCases, Умерло_100 = item.Value.deathCases / 53.67580, Выздоровело = item.Value.recoveredCases });
+                                       select new { Дата = item.Key.ToString("dd MMM yyyy"), Заражено = item.Value.infectedCases, Умерло = item.Value.deathCases, Умерло_100 = Math.Round(item.Value.deathCases / 53.67580, 2), Выздоровело = item.Value.recoveredCases });
             
             GridHist.ItemsSource = (from item in mainWindow.set.Histogram.intervals
                                     select new {Индекс = item.index, 

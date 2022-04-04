@@ -3,6 +3,7 @@ using MathNet.Numerics;
 
 namespace Utility
 {
+	[Serializable]
 	public class Histogram
 	{
 		public enum Parameters
@@ -78,7 +79,7 @@ namespace Utility
 
 		private void Init(int min = -1, int max = -1)
         {
-            if (min >= -1 && max >= -1)
+            if (min > -1 && max > -1)
             {
 				this.minVal = min;
 				this.maxVal = max;
@@ -149,7 +150,7 @@ namespace Utility
 					double phi_1 = c_0 * Integrate.DoubleExponential((x => Math.Exp(-x * x / 2)), 0, t_1i);
 					double phi_2 = c_0 * Integrate.DoubleExponential((x => Math.Exp(-x * x / 2)), 0, t_2i);
 
-                    interval.value_theor = (float) (n_sum * (phi_2 - phi_1));
+                    interval.value_theor = (int)Math.Round(n_sum * (phi_2 - phi_1));
 
 					if(interval.value_theor != 0)
                     {
@@ -164,7 +165,7 @@ namespace Utility
 					double z = (interval.index - xb_avg) / S;
 					double phi = c_0 * Math.Exp(-z * z / 2);
 
-					interval.value_theor = (float)(n_sum * h * phi / S);
+					interval.value_theor = (int)Math.Round(n_sum * h * phi / S);
 
 					if (interval.value_theor != 0)
 					{

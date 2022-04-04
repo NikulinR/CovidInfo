@@ -2,6 +2,7 @@
 
 namespace Utility
 {
+	[Serializable]
 	public class DayInfo
 	{
 		public DateTime date;

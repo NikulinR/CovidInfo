@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,6 +29,9 @@ namespace CovidInfo
         string param;
         public DataGrids? dg;
         System.Globalization.CultureInfo culture = System.Globalization.CultureInfo.CreateSpecificCulture("ru");
+        BinaryFormatter formatter = new BinaryFormatter();
+        OpenFileDialog openFileDialog = new OpenFileDialog();
+        SaveFileDialog saveFileDialog = new SaveFileDialog();
 
         public void drawSummary()
         {
@@ -93,6 +99,35 @@ namespace CovidInfo
         }
 
 
+        private void updateSettings()
+        {
+            DateFromPicker.SelectedDate = set.DateFrom;
+            DateToPicker.SelectedDate = set.DateTo;
+            //case type
+            switch (set.Parameter)
+            {
+                case Histogram.Parameters.Confirmed:
+                    cbParam.Text = "Зараженные";
+                    break;
+                case Histogram.Parameters.Deaths:
+                    cbParam.Text = "Умершие";
+                    break;
+                case Histogram.Parameters.Recovered:
+                    cbParam.Text = "Выздоровевшие";
+                    break;
+                default:
+                    break;
+            }
+            //country
+            cbCountry.Text = set.countries.FirstOrDefault(x => x.Value == set.Country).Key;
+            //column_count
+            NumBins.Text = set.BinCnt.ToString();
+            //laplas
+            cbLaplas.IsChecked = set.UseLaplas;
+            //shrink
+            cbShrink.IsChecked = set.Shrink;
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -101,11 +136,16 @@ namespace CovidInfo
             set.UpdateCountry();
             set.Recalc();
 
+
             DateFromPicker.SelectedDate = set.DateMin;
             DateToPicker.SelectedDate = set.DateMax;
 
             drawSummary();
             drawHist();
+
+
+            this.cbCountry.ItemsSource = set.countries.Keys;
+            this.cbCountry.Text = "Brazil";
         }
 
         private void DateFromPicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
@@ -147,12 +187,19 @@ namespace CovidInfo
 
         private void btnRecalc_Click(object sender, RoutedEventArgs e)
         {
-            set.UpdateCountry();
-            set.Recalc();
-            drawSummary();
-            drawHist();
-            if (dg is not null)
-                dg.Update();
+            try
+            {
+                set.UpdateCountry();
+                set.Recalc();
+                drawSummary();
+                drawHist();
+                if (dg is not null)
+                    dg.Update();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void cbParam_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -179,10 +226,9 @@ namespace CovidInfo
 
         private void cbCountry_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (set is not null)
+            if (set is not null & this.cbCountry is not null & cbCountry.SelectedItem is not null)
             {
-                ComboBoxItem item = cbCountry.SelectedItem as ComboBoxItem;
-                set.Country = item.Content.ToString().ToLower();
+                set.Country = set.countries[cbCountry.SelectedValue.ToString()];
             }
         }
 
@@ -229,6 +275,43 @@ namespace CovidInfo
         private void cbShrink_UnChecked(object sender, RoutedEventArgs e)
         {
             set.Shrink = false;
+        }
+
+
+        private void MenuItemSave_Click(object sender, RoutedEventArgs e)
+        {
+            saveFileDialog.InitialDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            saveFileDialog.FileName = $"{set.Country}_{set.Parameter.ToString()}_{set.DateFrom.ToString("yy-MM")} - {set.DateTo.ToString("yy-MM")}";
+            Nullable<bool> result = saveFileDialog.ShowDialog();
+            string fileName;
+            if (result == true)
+            {
+                fileName = saveFileDialog.FileName;
+                using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
+                {
+                    formatter.Serialize(fs, set);
+
+                    Console.WriteLine("Объект сериализован");
+                }
+            }
+        }
+
+        private void MenuItemLoad_Click(object sender, RoutedEventArgs e)
+        {
+            openFileDialog.InitialDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            Nullable<bool> result = openFileDialog.ShowDialog();
+            string fileName;
+            if (result == true)
+            {
+                fileName = openFileDialog.FileName;
+                using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
+                {
+                    set = (Settings)formatter.Deserialize(fs);
+                    updateSettings();
+
+                    drawSummary();
+                }
+            }
         }
     }
 }
