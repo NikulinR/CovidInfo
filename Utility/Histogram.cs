@@ -136,7 +136,7 @@ namespace Utility
 			float xb_avg = intervals.Sum(x => x.value_actual * x.index) / n_sum;
 
 			float h = 1;
-			double crit = 0;
+			double crit;
 
 			double S = Math.Sqrt(intervals.Sum(x => x.value_actual * Math.Pow(x.index - xb_avg, 2)) / (n_sum - 1));
 
@@ -150,12 +150,7 @@ namespace Utility
 					double phi_1 = c_0 * Integrate.DoubleExponential((x => Math.Exp(-x * x / 2)), 0, t_1i);
 					double phi_2 = c_0 * Integrate.DoubleExponential((x => Math.Exp(-x * x / 2)), 0, t_2i);
 
-                    interval.value_theor = (int)Math.Round(n_sum * (phi_2 - phi_1));
-
-					if(interval.value_theor != 0)
-                    {
-						crit += (float)(Math.Pow(interval.value_actual - interval.value_theor, 2) / interval.value_theor);
-					}
+                    interval.value_theor = (float)(n_sum * (phi_2 - phi_1));
 				}
             }
             else
@@ -165,12 +160,22 @@ namespace Utility
 					double z = (interval.index - xb_avg) / S;
 					double phi = c_0 * Math.Exp(-z * z / 2);
 
-					interval.value_theor = (int)Math.Round(n_sum * h * phi / S);
+					interval.value_theor = (float)(n_sum * h * phi / S);
+				}
+			}
+			crit = GetCrit();
+			return crit;
+        }
 
-					if (interval.value_theor != 0)
-					{
-						crit += (float)(Math.Pow(interval.value_actual - interval.value_theor, 2) / interval.value_theor);
-					}
+		public double GetCrit(int skip = 0)
+        {
+			double crit = 0;
+			for (int i = skip; i < intervals.Count; i++)
+            {
+				int cur_theor_value = (int)Math.Round(intervals[i].value_theor);
+				if (cur_theor_value != 0)
+				{
+					crit += Math.Pow(intervals[i].value_actual - cur_theor_value, 2) / cur_theor_value;
 				}
 			}
 			return crit;

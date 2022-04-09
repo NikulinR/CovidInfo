@@ -15,10 +15,11 @@ namespace CovidInfo
         private Histogram? histogram;
         private double crit;
         private double defaultCrit;
-        public double Crit { get => crit; }
+        public double Crit { get => crit; set => crit = value; }
+        public int Skip { get; set; }
         public double DefaultCrit { get => defaultCrit; }
         public bool updateData { get; set; }
-        public DateTime DateFrom { get; set ; }
+        public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
         public DateTime DateMin { get; set; }
         public DateTime DateMax { get; set; }
@@ -27,12 +28,13 @@ namespace CovidInfo
         public bool Shrink { get; set; }
         public string Country { get; set; }
         public Histogram.Parameters Parameter { get; set; }
-        public Dictionary<DateTime, DayInfo>? Init_info { get => init_info;  }
-        public Histogram? Histogram { get => histogram;  }
+        public Dictionary<DateTime, DayInfo>? Init_info { get => init_info; }
+        public Histogram? Histogram { get => histogram; }
 
         public Dictionary<string, string> countries;
 
-        public double alpha = 0.05; 
+        public double alpha = 0.05;
+
         public Settings(string country, Utility.Histogram.Parameters param)
         {
             this.Country = country;
@@ -56,13 +58,13 @@ namespace CovidInfo
         public void Recalc()
         {
             histogram = new Histogram(init_info, BinCnt, DateFrom, DateTo, Parameter);
-            crit = histogram.Calculate(UseLaplas, 
-                                       shrink: Shrink, 
-                                       //min: -1,
-                                       //max: 28,
-                                       border:5);
-
-            defaultCrit = MathNet.Numerics.Distributions.ChiSquared.InvCDF(BinCnt - 2, 1 - alpha);
+            histogram.Calculate(UseLaplas,
+                                shrink: Shrink,
+                                //min: -1,
+                                //max: 28,
+                                border: 6);
+            crit = histogram.GetCrit(Skip);
+            defaultCrit = MathNet.Numerics.Distributions.ChiSquared.InvCDF((BinCnt) - 3, 1 - alpha);
         }
     }
 }

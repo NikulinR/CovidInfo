@@ -42,7 +42,7 @@ namespace CovidInfo
                                                 Правая_граница = Math.Round(item.l_boundary, 2), 
                                                 Левая_граница = Math.Round(item.r_boundary, 2),
                                                 Эмпирические_частоты = Math.Round(item.value_actual, 2),
-                                                Теоретические_частоты = Math.Round(item.value_theor, 2)});
+                                                Теоретические_частоты = Math.Round(item.value_theor)});
             GridHist.Columns[0].Header = "Индекс";
             GridHist.Columns[1].Header = "Правая граница";
             GridHist.Columns[2].Header = "Левая граница";
